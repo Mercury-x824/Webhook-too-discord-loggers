@@ -6,6 +6,7 @@
     <title>Mercury Webhook Spammer</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* Your existing CSS remains the same */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -601,6 +602,7 @@
             let intervalId = null;
             let messageCount = 0;
             let totalMessages = 0;
+            let currentWebhookIndex = 0;
             
             startBtn.addEventListener('click', startSending);
             stopBtn.addEventListener('click', stopSending);
@@ -672,14 +674,50 @@
                 isSending = true;
                 messageCount = 0;
                 totalMessages = urls.length;
+                currentWebhookIndex = 0;
                 startBtn.disabled = true;
                 stopBtn.disabled = false;
                 setStatus('Sending messages...', 'sending');
                 addLog('Started sending messages', 'success');
                 
                 updateProgress();
-                sendMessage();
-                intervalId = setInterval(sendMessage, parseInt(delay.value));
+                sendNextMessage();
+            }
+            
+            function sendNextMessage() {
+                if (!isSending) return;
+                
+                const urls = getWebhookUrls();
+                if (currentWebhookIndex >= urls.length) {
+                    // All webhooks processed, wait for delay and start again
+                    setTimeout(() => {
+                        currentWebhookIndex = 0;
+                        sendNextMessage();
+                    }, parseInt(delay.value));
+                    return;
+                }
+                
+                const url = urls[currentWebhookIndex];
+                let content = message.value;
+                const includeEveryone = mentionEveryone.checked;
+                const includeHere = mentionHere.checked;
+                
+                sendWebhook(url, content, includeEveryone, includeHere, username.value, avatarUrl.value)
+                    .then(() => {
+                        messageCount++;
+                        setStatus(`Sending messages... (${messageCount} sent)`, 'sending');
+                        addLog(`Message #${messageCount} sent successfully to webhook ${currentWebhookIndex + 1}`, 'success');
+                        updateProgress();
+                        currentWebhookIndex++;
+                        sendNextMessage();
+                    })
+                    .catch(error => {
+                        messageCount++;
+                        addLog(`Message #${messageCount} error for webhook ${currentWebhookIndex + 1}: ${error.message}`, 'danger');
+                        updateProgress();
+                        currentWebhookIndex++;
+                        sendNextMessage();
+                    });
             }
             
             function stopSending() {
@@ -695,36 +733,14 @@
                 }
             }
             
-            function sendMessage() {
-                if (!isSending) return;
-                
-                const urls = getWebhookUrls();
-                let content = message.value;
-                const includeEveryone = mentionEveryone.checked;
-                const includeHere = mentionHere.checked;
-                
-                Promise.all(urls.map(url => sendWebhook(url, content, includeEveryone, includeHere, username.value, avatarUrl.value)))
-                    .then(() => {
-                        messageCount++;
-                        setStatus(`Sending messages... (${messageCount} sent)`, 'sending');
-                        addLog(`Message #${messageCount} sent successfully`, 'success');
-                        updateProgress();
-                    })
-                    .catch(error => {
-                        messageCount++;
-                        addLog(`Message #${messageCount} error: ${error.message}`, 'danger');
-                        updateProgress();
-                    });
-            }
-            
             function updateProgress() {
                 if (totalMessages > 0) {
-                    const percent = (messageCount / totalMessages) * 100;
+                    const percent = (messageCount / (totalMessages * 100)) * 100;
                     progress.style.width = `${percent}%`;
                 }
             }
             
-            function sendWebhook(url, content, includeEveryone, includeHere, username, avatarUrl) {
+            async function sendWebhook(url, content, includeEveryone, includeHere, username, avatarUrl) {
                 let finalContent = content;
                 if (includeEveryone) finalContent = '@everyone ' + finalContent;
                 if (includeHere) finalContent = '@here ' + finalContent;
@@ -739,11 +755,31 @@
                 if (username && username.trim() !== '') payload.username = username;
                 if (avatarUrl && avatarUrl.trim() !== '') payload.avatar_url = avatarUrl;
                 
-                return fetch(url, { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'application/json' }, 
-                    body: JSON.stringify(payload) 
-                });
+                try {
+                    const response = await fetch(url, { 
+                        method: 'POST', 
+                        headers: { 'Content-Type': 'application/json' }, 
+                        body: JSON.stringify(payload) 
+                    });
+                    
+                    if (!response.ok) {
+                        let errorMessage = `HTTP ${response.status}`;
+                        try {
+                            const errorData = await response.json();
+                            if (errorData.message) {
+                                errorMessage = errorData.message;
+                            }
+                        } catch (e) {
+                            // If we can't parse the error response, use the status text
+                            errorMessage = response.statusText || `HTTP ${response.status}`;
+                        }
+                        throw new Error(errorMessage);
+                    }
+                    
+                    return response;
+                } catch (error) {
+                    throw new Error(error.message || 'Failed to send webhook');
+                }
             }
             
             function setStatus(text, className) {
