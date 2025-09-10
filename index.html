@@ -1597,82 +1597,98 @@ Message 3"></textarea>
                     return;
                 }
                 
-                // Extract invite code from URL
-                let inviteCode = '';
-                if (inviteUrl.includes('discord.gg/')) {
-                    inviteCode = inviteUrl.split('discord.gg/')[1];
-                } else if (inviteUrl.includes('discord.com/invite/')) {
-                    inviteCode = inviteUrl.split('discord.com/invite/')[1];
-                } else {
-                    // Assume it's just the code
-                    inviteCode = inviteUrl;
-                }
-                
-                // Remove any query parameters
-                if (inviteCode.includes('?')) {
-                    inviteCode = inviteCode.split('?')[0];
-                }
-                
-                if (!inviteCode) {
-                    addLog('Invalid Discord invite URL', 'error');
-                    return;
-                }
-                
-                setStatus('Fetching server information...', 'sending');
-                
-                // Use Discord API to get invite information
-                fetch(`https://discord.com/api/v9/invites/${inviteCode}?with_counts=true`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status}`);
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (data.guild) {
-                            serverData = {
-                                id: data.guild.id,
-                                name: data.guild.name,
-                                owner: {
-                                    id: "SIMULATED_OWNER_ID", // In a real implementation, you'd need proper API access
-                                    username: "ServerOwner#1234"
-                                },
-                                memberCount: data.approximate_member_count || 100
-                            };
-                            
-                            serverName.textContent = `Name: ${serverData.name}`;
-                            serverOwner.textContent = `Owner: ${serverData.owner.username} (ID: ${serverData.owner.id})`;
-                            serverMembers.textContent = `Members: ${serverData.memberCount}`;
-                            
-                            setStatus('Server information loaded', 'idle');
-                            addLog(`Server information loaded for ${serverData.name}`, 'success');
-                        } else {
-                            addLog('Failed to fetch server information', 'error');
-                            setStatus('Failed to fetch server info', 'error');
-                        }
-                    })
-                    .catch(err => {
-                        addLog(`Failed to fetch server info: ${err.message}`, 'error');
-                        setStatus('Failed to fetch server info', 'error');
-                        
-                        // Simulate server data for demonstration purposes
-                        serverData = {
-                            id: "SIMULATED_SERVER_ID",
-                            name: "Example Server",
-                            owner: {
-                                id: "SIMULATED_OWNER_ID",
-                                username: "ServerOwner#1234"
-                            },
-                            memberCount: 100
-                        };
-                        
-                        serverName.textContent = `Name: ${serverData.name} (Simulated)`;
-                        serverOwner.textContent = `Owner: ${serverData.owner.username} (ID: ${serverData.owner.id})`;
-                        serverMembers.textContent = `Members: ${serverData.memberCount}`;
-                        
-                        addLog('Using simulated server data for demonstration', 'warning');
-                    });
-            }
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // your existing code...
+
+    // Variables for server info and fetch
+    let serverData = null;
+    const inviteInput = document.getElementById('inviteInput');
+    const fetchInviteBtn = document.getElementById('fetchInviteBtn');
+    const serverName = document.getElementById('serverName');
+    const serverOwner = document.getElementById('serverOwner');
+    const serverMembers = document.getElementById('serverMembers');
+    const serverInfoContainer = document.getElementById('serverInfoContainer');
+
+    // Event listener for fetch button
+    fetchInviteBtn.addEventListener('click', fetchServerInformation);
+
+    function fetchServerInformation() {
+      const inviteUrl = inviteInput.value.trim();
+      if (!inviteUrl) {
+        addLog('Please enter a Discord invite URL', 'error');
+        return;
+      }
+
+      // Extract invite code
+      let inviteCode = '';
+      if (inviteUrl.includes('discord.gg/')) {
+        inviteCode = inviteUrl.split('discord.gg/')[1];
+      } else if (inviteUrl.includes('discord.com/invite/')) {
+        inviteCode = inviteUrl.split('discord.com/invite/')[1];
+      } else {
+        inviteCode = inviteUrl;
+      }
+      if (inviteCode.includes('?')) {
+        inviteCode = inviteCode.split('?')[0];
+      }
+      if (!inviteCode) {
+        addLog('Invalid Discord invite URL', 'error');
+        return;
+      }
+
+      setStatus('Fetching server information...', 'sending');
+
+      fetch(`https://discord.com/api/v9/invites/${inviteCode}?with_counts=true`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data.guild) {
+            // Save owner id from invite data
+            serverData = {
+              id: data.guild.id,
+              name: data.guild.name,
+              owner: {
+                id: data.guild.owner_id || 'Unknown', // owner_id is present here
+              },
+              memberCount: data.approximate_member_count || 100
+            };
+            // Update display
+            serverName.textContent = `Name: ${serverData.name}`;
+            serverOwner.textContent = `Owner ID: ${serverData.owner.id}`;
+            serverMembers.textContent = `Members: ${serverData.memberCount}`;
+            setStatus('Server information loaded', 'idle');
+            addLog(`Server info loaded for ${serverData.name}`, 'success');
+            // Show server info section
+            serverInfoContainer.style.display = 'block';
+          } else {
+            throw new Error('No guild data');
+          }
+        })
+        .catch(err => {
+          addLog(`Failed to fetch server info: ${err.message}`, 'error');
+
+          // fallback simulated data
+          serverData = {
+            id: "SIMULATED_SERVER_ID",
+            name: "Example Server",
+            owner: {
+              id: "SIMULATED_OWNER_ID"
+            },
+            memberCount: 100
+          };
+          serverName.textContent = `Name: ${serverData.name} (Simulated)`;
+          serverOwner.textContent = `Owner ID: ${serverData.owner.id} (Simulated)`;
+          serverMembers.textContent = `Members: ${serverData.memberCount}`;
+          addLog('Using simulated server data for demonstration', 'warning');
+          // Show server info section
+          serverInfoContainer.style.display = 'block';
+        });
+    }
             
             function saveConfiguration() {
                 const config = {
@@ -1833,3 +1849,4 @@ Message 3"></textarea>
     </script>
 </body>
 </html>
+
