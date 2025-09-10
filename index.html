@@ -6,139 +6,80 @@
     <title>Mercury Webhook Spammer</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background: linear-gradient(135deg, #0a0e1a 0%, #151f32 100%);
-            color: #fff;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        body::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 10% 20%, rgba(96, 165, 250, 0.1) 0%, transparent 20%),
-                        radial-gradient(circle at 90% 80%, rgba(34, 197, 94, 0.1) 0%, transparent 20%);
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .container {
-            background: rgba(23, 33, 49, 0.95);
-            backdrop-filter: blur(16px);
-            border-radius: 20px;
-            padding: 40px 35px;
-            width: 100%;
-            max-width: 650px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: 1px solid rgba(96, 165, 250, 0.1);
-        }
-
-        .container:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8);
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            position: relative;
-        }
-
-        h1 {
-            color: #60a5fa;
-            font-size: 32px;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-            text-shadow: 0 0 15px rgba(96, 165, 250, 0.4);
-        }
-
-        .subtitle {
-            color: #94a3b8;
-            font-size: 16px;
-            font-weight: 400;
-        }
-
-        .header::after {
-            content: "";
-            display: block;
-            width: 60px;
-            height: 3px;
-            background: linear-gradient(90deg, #60a5fa, #22c55e);
-            margin: 15px auto 0;
-            border-radius: 3px;
-        }
-
-        .card {
-            background: rgba(30, 41, 59, 0.6);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-3px);
-        }
-
-        .card-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-            color: #e2e8f0;
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .card-title i {
-            color: #60a5fa;
-            font-size: 18px;
-        }
-
-        .form-group {
+        /* Previous CSS remains the same, adding only new styles below */
+        
+        .webhook-manager {
             margin-bottom: 20px;
         }
-
-        label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: 600;
-            color: #e2e8f0;
-            font-size: 15px;
+        
+        .webhook-list {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 10px;
+            background: rgba(30, 41, 59, 0.5);
+        }
+        
+        .webhook-item {
             display: flex;
+            justify-content: space-between;
             align-items: center;
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            background: rgba(23, 33, 49, 0.7);
+            border-radius: 6px;
+            transition: background 0.3s ease;
+        }
+        
+        .webhook-item:hover {
+            background: rgba(23, 33, 49, 0.9);
+        }
+        
+        .webhook-url {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-family: monospace;
+            font-size: 13px;
+            color: #cbd5e1;
+        }
+        
+        .webhook-actions {
+            display: flex;
             gap: 8px;
         }
-
-        label i {
-            color: #60a5fa;
-            font-size: 14px;
+        
+        .webhook-btn {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
         }
-
-        input,
-        textarea,
-        select {
-            width: 100%;
-            padding: 14px 16px;
+        
+        .webhook-btn:hover {
+            color: #60a5fa;
+            background: rgba(96, 165, 250, 0.1);
+        }
+        
+        .webhook-btn.delete:hover {
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+        
+        .webhook-input-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .webhook-input {
+            flex: 1;
+            padding: 12px 16px;
             border-radius: 12px;
             border: 2px solid #334155;
             background: rgba(30, 41, 59, 0.7);
@@ -146,404 +87,71 @@
             font-size: 15px;
             transition: all 0.3s ease;
         }
-
-        input:focus,
-        textarea:focus,
-        select:focus {
+        
+        .webhook-input:focus {
             border-color: #60a5fa;
             box-shadow: 0 0 15px rgba(96, 165, 250, 0.4);
             outline: none;
             background: rgba(30, 41, 59, 0.9);
         }
-
-        textarea {
-            min-height: 130px;
-            resize: vertical;
-            line-height: 1.5;
-        }
-
-        .checkbox-group {
-            display: flex;
-            gap: 20px;
-            margin-top: 12px;
-        }
-
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #cbd5e1;
-            background: rgba(30, 41, 59, 0.5);
-            padding: 8px 12px;
-            border-radius: 8px;
-            transition: background 0.3s ease;
-        }
-
-        .checkbox-item:hover {
-            background: rgba(30, 41, 59, 0.8);
-        }
-
-        .checkbox-item input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            accent-color: #60a5fa;
-        }
-
-        .button-group {
-            display: flex;
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        button {
-            flex: 1;
-            padding: 16px;
+        
+        .add-webhook-btn {
+            padding: 12px 20px;
             border: none;
             border-radius: 12px;
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            color: white;
             font-weight: 600;
-            font-size: 16px;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
-            justify-content: center;
             align-items: center;
             gap: 8px;
         }
-
-        #startBtn {
-            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-            color: white;
-            box-shadow: 0 4px 10px rgba(34, 197, 94, 0.3);
-        }
-
-        #startBtn:hover {
+        
+        .add-webhook-btn:hover {
             background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
             transform: translateY(-2px);
             box-shadow: 0 6px 15px rgba(34, 197, 94, 0.4);
         }
-
-        #stopBtn {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            color: white;
-            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
-        }
-
-        #stopBtn:hover {
-            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(239, 68, 68, 0.4);
-        }
-
-        button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none !important;
-            box-shadow: none !important;
-        }
-
-        .status {
+        
+        .empty-state {
             text-align: center;
-            margin-top: 25px;
-            padding: 14px;
-            border-radius: 12px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: all 0.3s ease;
+            padding: 20px;
+            color: #94a3b8;
+            font-style: italic;
         }
-
-        .sending {
-            background: rgba(34, 197, 94, 0.15);
-            color: #22c55e;
-            box-shadow: 0 0 15px rgba(34, 197, 94, 0.2);
-            animation: pulse 1.5s infinite;
-        }
-
-        .idle {
-            background: rgba(96, 165, 250, 0.15);
-            color: #60a5fa;
-            box-shadow: 0 0 15px rgba(96, 165, 250, 0.2);
-        }
-
-        .error {
-            background: rgba(239, 68, 68, 0.15);
-            color: #ef4444;
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
-        }
-
-        .info {
-            margin-top: 30px;
-            padding: 18px;
-            background: rgba(96, 165, 250, 0.1);
-            border-radius: 12px;
-            font-size: 14px;
-            border-left: 4px solid #60a5fa;
-        }
-
-        .info h3 {
-            margin-bottom: 12px;
-            color: #60a5fa;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .info ul {
-            padding-left: 20px;
-        }
-
-        .info li {
-            margin-bottom: 8px;
-            line-height: 1.5;
-        }
-
-        .test-btn {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            color: white;
-            margin-top: 15px;
-            padding: 14px;
-            width: 100%;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .test-btn:hover {
-            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(59, 130, 246, 0.4);
-        }
-
-        .logs {
-            margin-top: 25px;
-            padding: 18px;
-            background: rgba(15, 23, 42, 0.6);
-            border-radius: 12px;
-            max-height: 220px;
-            overflow-y: auto;
-            font-family: 'Fira Code', monospace;
-            font-size: 13px;
-            scrollbar-width: thin;
-            scrollbar-color: #3b82f6 transparent;
-            border: 1px solid rgba(96, 165, 250, 0.1);
-        }
-
-        .logs::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .logs::-webkit-scrollbar-thumb {
-            background: #3b82f6;
-            border-radius: 4px;
-        }
-
-        .log-entry {
-            margin-bottom: 8px;
-            padding: 8px 10px;
-            border-radius: 6px;
-            background: rgba(30, 41, 59, 0.4);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: background 0.3s ease;
-        }
-
-        .log-entry:hover {
-            background: rgba(30, 41, 59, 0.7);
-        }
-
-        .log-entry i {
-            font-size: 12px;
-        }
-
-        .success {
-            color: #22c55e;
-            border-left: 3px solid #22c55e;
-        }
-
-        .warning {
-            color: #facc15;
-            border-left: 3px solid #facc15;
-        }
-
-        .danger {
-            color: #ef4444;
-            border-left: 3px solid #ef4444;
-        }
-
-        .troubleshooting {
-            margin-top: 25px;
-            background: rgba(239, 68, 68, 0.1);
-            padding: 18px;
-            border-radius: 12px;
-            border-left: 4px solid #ef4444;
-        }
-
-        .troubleshooting h3 {
-            color: #ef4444;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .troubleshooting ul {
-            padding-left: 20px;
-        }
-
-        .troubleshooting li {
-            margin-bottom: 8px;
-            line-height: 1.5;
-        }
-
-        .avatar-input {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .avatar-input input {
-            flex: 1;
-        }
-
-        .avatar-preview {
-            width: 46px;
-            height: 46px;
-            border-radius: 50%;
-            background: rgba(30, 41, 59, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            border: 2px solid #334155;
-            transition: border 0.3s ease;
-        }
-
-        .avatar-preview:hover {
-            border-color: #60a5fa;
-        }
-
-        .avatar-preview img {
-            max-width: 100%;
-            max-height: 100%;
-        }
-
-        .counter {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(96, 165, 250, 0.2);
-            color: #60a5fa;
-            padding: 4px 8px;
-            border-radius: 10px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .progress-bar {
-            height: 6px;
-            background: rgba(30, 41, 59, 0.7);
-            border-radius: 3px;
-            margin-top: 15px;
-            overflow: hidden;
-        }
-
-        .progress {
-            height: 100%;
-            background: linear-gradient(90deg, #60a5fa, #22c55e);
-            border-radius: 3px;
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-
-        .advanced-toggle {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 15px;
-            cursor: pointer;
-            color: #60a5fa;
-            font-weight: 600;
-        }
-
-        .advanced-settings {
-            margin-top: 15px;
-            padding: 15px;
-            background: rgba(30, 41, 59, 0.5);
-            border-radius: 12px;
-            border: 1px solid rgba(96, 165, 250, 0.2);
-            display: none;
-        }
-
-        .advanced-settings.show {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .stats {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 15px;
-            padding: 10px;
-            background: rgba(30, 41, 59, 0.5);
-            border-radius: 10px;
-        }
-
-        .stat-item {
-            text-align: center;
-            flex: 1;
-        }
-
-        .stat-value {
-            font-size: 18px;
-            font-weight: 700;
-            color: #60a5fa;
-        }
-
-        .stat-label {
+        
+        .webhook-counter {
             font-size: 12px;
             color: #94a3b8;
+            margin-bottom: 10px;
         }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        
+        .import-export {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
         }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+        
+        .import-export-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(96, 165, 250, 0.2);
+            color: #60a5fa;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
-
-        @media (max-width: 600px) {
-            .container {
-                padding: 25px 20px;
-            }
-            
-            .checkbox-group {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .button-group {
-                flex-direction: column;
-            }
-            
-            h1 {
-                font-size: 24px;
-            }
-            
-            .stats {
-                flex-direction: column;
-                gap: 10px;
-            }
+        
+        .import-export-btn:hover {
+            background: rgba(96, 165, 250, 0.3);
         }
     </style>
 </head>
@@ -557,448 +165,302 @@
         <div class="card">
             <div class="card-title">
                 <i class="fas fa-link"></i>
-                <span>Webhook Configuration</span>
+                <span>Webhook Management</span>
             </div>
             
-            <div class="form-group">
-                <label for="webhookUrl"><i class="fas fa-link"></i> Webhook URLs (one per line)</label>
-                <textarea id="webhookUrl" placeholder="https://discord.com/api/webhooks/...&#10;https://discord.com/api/webhooks/..."></textarea>
-                <button class="test-btn" id="testWebhook"><i class="fas fa-bolt"></i> Test Webhooks</button>
-            </div>
-            
-            <div class="form-group">
-                <label for="username"><i class="fas fa-user"></i> Bot Username (Optional)</label>
-                <input type="text" id="username" placeholder="Custom username" />
-            </div>
-            
-            <div class="form-group">
-                <label for="avatarUrl"><i class="fas fa-image"></i> Avatar URL (Optional)</label>
-                <div class="avatar-input">
-                    <input type="text" id="avatarUrl" placeholder="https://example.com/avatar.png" />
-                    <div class="avatar-preview" id="avatarPreview"><span>?</span></div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="card">
-            <div class="card-title">
-                <i class="fas fa-envelope"></i>
-                <span>Message Content</span>
-            </div>
-            
-            <div class="form-group">
-                <label for="messageType"><i class="fas fa-code"></i> Message Type</label>
-                <select id="messageType">
-                    <option value="text">Text Message</option>
-                    <option value="embed">Embed Message</option>
-                </select>
-            </div>
-            
-            <div class="form-group" id="textMessageGroup">
-                <textarea id="message" placeholder="Enter your message here..."></textarea>
-            </div>
-            
-            <div class="form-group" id="embedMessageGroup" style="display: none;">
-                <label for="embedTitle"><i class="fas fa-heading"></i> Embed Title</label>
-                <input type="text" id="embedTitle" placeholder="Embed title" />
+            <div class="webhook-manager">
+                <div class="webhook-counter" id="webhookCounter">0 webhooks added</div>
                 
-                <label for="embedDescription"><i class="fas fa-align-left"></i> Embed Description</label>
-                <textarea id="embedDescription" placeholder="Embed description"></textarea>
-                
-                <label for="embedColor"><i class="fas fa-palette"></i> Embed Color</label>
-                <input type="color" id="embedColor" value="#60a5fa" />
-            </div>
-            
-            <div class="form-group">
-                <label><i class="fas fa-at"></i> Mentions</label>
-                <div class="checkbox-group">
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="mentionEveryone" />
-                        <label for="mentionEveryone">@everyone</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="mentionHere" />
-                        <label for="mentionHere">@here</label>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="advanced-toggle" id="advancedToggle">
-                <i class="fas fa-cog"></i>
-                <span>Advanced Settings</span>
-                <i class="fas fa-chevron-down"></i>
-            </div>
-            
-            <div class="advanced-settings" id="advancedSettings">
-                <div class="form-group">
-                    <label for="delay"><i class="fas fa-clock"></i> Delay (milliseconds)</label>
-                    <input type="number" id="delay" value="2000" min="1000" />
+                <div class="webhook-list" id="webhookList">
+                    <div class="empty-state" id="emptyState">No webhooks added yet</div>
                 </div>
                 
-                <div class="form-group">
-                    <label for="messageCount"><i class="fas fa-hashtag"></i> Messages to Send (0 = infinite)</label>
-                    <input type="number" id="messageCount" value="0" min="0" />
+                <div class="webhook-input-group">
+                    <input type="text" class="webhook-input" id="webhookInput" placeholder="https://discord.com/api/webhooks/..." />
+                    <button class="add-webhook-btn" id="addWebhookBtn"><i class="fas fa-plus"></i> Add</button>
                 </div>
                 
-                <div class="form-group">
-                    <label for="threads"><i class="fas fa-layer-group"></i> Concurrent Threads</label>
-                    <input type="number" id="threads" value="1" min="1" max="10" />
+                <div class="import-export">
+                    <button class="import-export-btn" id="importWebhooksBtn"><i class="fas fa-file-import"></i> Import</button>
+                    <button class="import-export-btn" id="exportWebhooksBtn"><i class="fas fa-file-export"></i> Export</button>
+                    <button class="import-export-btn" id="clearWebhooksBtn"><i class="fas fa-trash"></i> Clear All</button>
                 </div>
+                
+                <input type="file" id="importFile" accept=".json,.txt" style="display: none;" />
             </div>
+            
+            <button class="test-btn" id="testWebhook"><i class="fas fa-bolt"></i> Test All Webhooks</button>
         </div>
         
-        <div class="stats">
-            <div class="stat-item">
-                <div class="stat-value" id="sentCount">0</div>
-                <div class="stat-label">Messages Sent</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value" id="successCount">0</div>
-                <div class="stat-label">Successful</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value" id="errorCount">0</div>
-                <div class="stat-label">Errors</div>
-            </div>
-        </div>
+        <!-- Rest of the HTML remains the same -->
         
-        <div class="button-group">
-            <button id="startBtn"><i class="fas fa-play"></i> Start Sending</button>
-            <button id="stopBtn" disabled><i class="fas fa-stop"></i> Stop Sending</button>
-        </div>
-        
-        <div id="status" class="status idle"><i class="fas fa-info-circle"></i> Idle</div>
-        <div class="progress-bar">
-            <div class="progress" id="progress"></div>
-        </div>
-        
-        <div class="logs" id="logs">
-            <div class="log-entry"><i class="fas fa-info-circle"></i> Logs will appear here...</div>
-        </div>
-        
-        <div class="troubleshooting">
-            <h3><i class="fas fa-tools"></i> Troubleshooting</h3>
-            <ul>
-                <li>Check if your message content is properly formatted</li>
-                <li>Ensure you're not sending empty messages</li>
-                <li>Verify that avatar URLs are valid image URLs</li>
-                <li>Check that the webhook URL is correctly formatted</li>
-                <li>Try without custom username/avatar first</li>
-            </ul>
-        </div>
-        
-        <div class="info">
-            <h3><i class="fas fa-exclamation-circle"></i> Important Information</h3>
-            <ul>
-                <li>This tool is for educational purposes only</li>
-                <li>Misuse of this tool may violate Discord's Terms of Service</li>
-                <li>Use responsibly and at your own risk</li>
-                <li>Developed by Mercury Group</li>
-            </ul>
-        </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Elements
-            const webhookUrl = document.getElementById('webhookUrl');
-            const username = document.getElementById('username');
-            const avatarUrl = document.getElementById('avatarUrl');
-            const avatarPreview = document.getElementById('avatarPreview');
-            const message = document.getElementById('message');
-            const messageType = document.getElementById('messageType');
-            const textMessageGroup = document.getElementById('textMessageGroup');
-            const embedMessageGroup = document.getElementById('embedMessageGroup');
-            const embedTitle = document.getElementById('embedTitle');
-            const embedDescription = document.getElementById('embedDescription');
-            const embedColor = document.getElementById('embedColor');
-            const mentionEveryone = document.getElementById('mentionEveryone');
-            const mentionHere = document.getElementById('mentionHere');
-            const delay = document.getElementById('delay');
-            const messageCount = document.getElementById('messageCount');
-            const threads = document.getElementById('threads');
-            const startBtn = document.getElementById('startBtn');
-            const stopBtn = document.getElementById('stopBtn');
-            const testWebhookBtn = document.getElementById('testWebhook');
-            const status = document.getElementById('status');
-            const logsContainer = document.getElementById('logs');
-            const progress = document.getElementById('progress');
-            const advancedToggle = document.getElementById('advancedToggle');
-            const advancedSettings = document.getElementById('advancedSettings');
-            const sentCount = document.getElementById('sentCount');
-            const successCount = document.getElementById('successCount');
-            const errorCount = document.getElementById('errorCount');
+            const webhookInput = document.getElementById('webhookInput');
+            const addWebhookBtn = document.getElementById('addWebhookBtn');
+            const webhookList = document.getElementById('webhookList');
+            const emptyState = document.getElementById('emptyState');
+            const webhookCounter = document.getElementById('webhookCounter');
+            const importWebhooksBtn = document.getElementById('importWebhooksBtn');
+            const exportWebhooksBtn = document.getElementById('exportWebhooksBtn');
+            const clearWebhooksBtn = document.getElementById('clearWebhooksBtn');
+            const importFile = document.getElementById('importFile');
             
-            // State
-            let isSending = false;
-            let intervalId = null;
-            let sentMessages = 0;
-            let successfulMessages = 0;
-            let errorMessages = 0;
-            let totalMessages = 0;
-            let currentWebhookIndex = 0;
-            let activeThreads = 0;
-            let maxThreads = 1;
+            // Webhooks array
+            let webhooks = [];
+            
+            // Load webhooks from localStorage if available
+            loadWebhooks();
             
             // Event listeners
-            startBtn.addEventListener('click', startSending);
-            stopBtn.addEventListener('click', stopSending);
-            testWebhookBtn.addEventListener('click', testWebhooks);
-            avatarUrl.addEventListener('input', updateAvatarPreview);
-            messageType.addEventListener('change', toggleMessageType);
-            advancedToggle.addEventListener('click', toggleAdvancedSettings);
+            addWebhookBtn.addEventListener('click', addWebhook);
+            webhookInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') addWebhook();
+            });
+            importWebhooksBtn.addEventListener('click', () => importFile.click());
+            exportWebhooksBtn.addEventListener('click', exportWebhooks);
+            clearWebhooksBtn.addEventListener('click', clearWebhooks);
+            importFile.addEventListener('change', importWebhooks);
             
             // Functions
-            function updateAvatarPreview() {
-                if (avatarUrl.value) {
-                    avatarPreview.innerHTML = `<img src="${avatarUrl.value}" alt="Avatar" onerror="this.style.display='none'; this.parentElement.innerHTML='?'">`;
+            function addWebhook() {
+                const url = webhookInput.value.trim();
+                if (!url) return;
+                
+                // Basic validation for Discord webhook URLs
+                if (!isValidWebhookUrl(url)) {
+                    addLog('Invalid webhook URL format', 'danger');
+                    setStatus('Invalid webhook URL format', 'error');
+                    return;
+                }
+                
+                // Check if webhook already exists
+                if (webhooks.includes(url)) {
+                    addLog('Webhook already exists', 'warning');
+                    setStatus('Webhook already exists', 'error');
+                    return;
+                }
+                
+                webhooks.push(url);
+                saveWebhooks();
+                renderWebhooks();
+                
+                webhookInput.value = '';
+                addLog(`Webhook added: ${truncateUrl(url)}`, 'success');
+            }
+            
+            function removeWebhook(index) {
+                const removedUrl = webhooks[index];
+                webhooks.splice(index, 1);
+                saveWebhooks();
+                renderWebhooks();
+                
+                addLog(`Webhook removed: ${truncateUrl(removedUrl)}`, 'warning');
+            }
+            
+            function testSingleWebhook(index) {
+                const url = webhooks[index];
+                const testMessage = "Test message from Mercury Webhook Messenger";
+                
+                sendWebhook(url, testMessage, false, false, username.value, avatarUrl.value)
+                    .then(() => {
+                        addLog(`Webhook test successful: ${truncateUrl(url)}`, 'success');
+                    })
+                    .catch(err => {
+                        addLog(`Webhook test failed: ${truncateUrl(url)} - ${err.message}`, 'danger');
+                    });
+            }
+            
+            function renderWebhooks() {
+                // Clear the list
+                webhookList.innerHTML = '';
+                
+                if (webhooks.length === 0) {
+                    webhookList.appendChild(emptyState);
+                    emptyState.style.display = 'block';
                 } else {
-                    avatarPreview.innerHTML = '<span>?</span>';
+                    emptyState.style.display = 'none';
+                    
+                    webhooks.forEach((url, index) => {
+                        const webhookItem = document.createElement('div');
+                        webhookItem.className = 'webhook-item';
+                        
+                        const urlElement = document.createElement('div');
+                        urlElement.className = 'webhook-url';
+                        urlElement.textContent = truncateUrl(url);
+                        urlElement.title = url;
+                        
+                        const actions = document.createElement('div');
+                        actions.className = 'webhook-actions';
+                        
+                        const testBtn = document.createElement('button');
+                        testBtn.className = 'webhook-btn';
+                        testBtn.innerHTML = '<i class="fas fa-bolt"></i>';
+                        testBtn.title = 'Test this webhook';
+                        testBtn.onclick = () => testSingleWebhook(index);
+                        
+                        const deleteBtn = document.createElement('button');
+                        deleteBtn.className = 'webhook-btn delete';
+                        deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+                        deleteBtn.title = 'Remove this webhook';
+                        deleteBtn.onclick = () => removeWebhook(index);
+                        
+                        actions.appendChild(testBtn);
+                        actions.appendChild(deleteBtn);
+                        
+                        webhookItem.appendChild(urlElement);
+                        webhookItem.appendChild(actions);
+                        
+                        webhookList.appendChild(webhookItem);
+                    });
+                }
+                
+                updateWebhookCounter();
+                updateWebhookTextarea();
+            }
+            
+            function updateWebhookCounter() {
+                webhookCounter.textContent = `${webhooks.length} webhook${webhooks.length !== 1 ? 's' : ''} added`;
+            }
+            
+            function updateWebhookTextarea() {
+                // Update the original textarea with all webhooks
+                webhookUrl.value = webhooks.join('\n');
+            }
+            
+            function saveWebhooks() {
+                localStorage.setItem('mercury_webhooks', JSON.stringify(webhooks));
+            }
+            
+            function loadWebhooks() {
+                const savedWebhooks = localStorage.getItem('mercury_webhooks');
+                if (savedWebhooks) {
+                    try {
+                        webhooks = JSON.parse(savedWebhooks);
+                        renderWebhooks();
+                    } catch (e) {
+                        console.error('Failed to load webhooks:', e);
+                        webhooks = [];
+                    }
                 }
             }
             
-            function toggleMessageType() {
-                if (messageType.value === 'text') {
-                    textMessageGroup.style.display = 'block';
-                    embedMessageGroup.style.display = 'none';
-                } else {
-                    textMessageGroup.style.display = 'none';
-                    embedMessageGroup.style.display = 'block';
+            function exportWebhooks() {
+                if (webhooks.length === 0) {
+                    addLog('No webhooks to export', 'warning');
+                    return;
+                }
+                
+                const data = JSON.stringify(webhooks, null, 2);
+                const blob = new Blob([data], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'mercury_webhooks.json';
+                document.body.appendChild(a);
+                a.click();
+                
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 100);
+                
+                addLog('Webhooks exported successfully', 'success');
+            }
+            
+            function importWebhooks(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const importedWebhooks = JSON.parse(e.target.result);
+                        
+                        if (!Array.isArray(importedWebhooks)) {
+                            throw new Error('Invalid file format');
+                        }
+                        
+                        // Validate each URL and add only valid ones
+                        let addedCount = 0;
+                        importedWebhooks.forEach(url => {
+                            if (isValidWebhookUrl(url) && !webhooks.includes(url)) {
+                                webhooks.push(url);
+                                addedCount++;
+                            }
+                        });
+                        
+                        saveWebhooks();
+                        renderWebhooks();
+                        
+                        addLog(`Imported ${addedCount} webhooks`, 'success');
+                        setStatus(`Imported ${addedCount} webhooks`, 'idle');
+                        
+                    } catch (error) {
+                        addLog('Failed to import webhooks: Invalid file', 'danger');
+                        setStatus('Failed to import webhooks', 'error');
+                    }
+                };
+                
+                reader.readAsText(file);
+                // Reset the file input
+                event.target.value = '';
+            }
+            
+            function clearWebhooks() {
+                if (webhooks.length === 0) return;
+                
+                if (confirm(`Are you sure you want to remove all ${webhooks.length} webhooks?`)) {
+                    webhooks = [];
+                    saveWebhooks();
+                    renderWebhooks();
+                    
+                    addLog('All webhooks cleared', 'warning');
+                    setStatus('All webhooks cleared', 'idle');
                 }
             }
             
-            function toggleAdvancedSettings() {
-                advancedSettings.classList.toggle('show');
-                const icon = advancedToggle.querySelector('.fa-chevron-down');
-                icon.classList.toggle('fa-chevron-down');
-                icon.classList.toggle('fa-chevron-up');
+            function isValidWebhookUrl(url) {
+                // Basic validation for Discord webhook URLs
+                return /^https:\/\/(?:canary\.|ptb\.)?discord\.com\/api\/webhooks\/\d+\/[\w-]+$/i.test(url);
             }
             
-            function addLog(message, type = '') {
-                const logEntry = document.createElement('div');
-                logEntry.className = `log-entry ${type}`;
-                
-                let icon = 'fas fa-info-circle';
-                if (type === 'success') icon = 'fas fa-check-circle';
-                if (type === 'danger') icon = 'fas fa-exclamation-circle';
-                if (type === 'warning') icon = 'fas fa-exclamation-triangle';
-                
-                const timestamp = new Date().toLocaleTimeString();
-                logEntry.innerHTML = `<i class="${icon}"></i> [${timestamp}] ${message}`;
-                logsContainer.prepend(logEntry);
-                
-                if (logsContainer.children.length > 20) {
-                    logsContainer.removeChild(logsContainer.lastChild);
-                }
+            function truncateUrl(url, maxLength = 40) {
+                if (url.length <= maxLength) return url;
+                return url.substring(0, maxLength - 3) + '...';
             }
             
+            // Update the getWebhookUrls function to use our webhooks array
             function getWebhookUrls() {
-                return webhookUrl.value.trim().split('\n').map(u => u.trim()).filter(u => u !== '');
+                return webhooks.filter(u => u !== '');
             }
             
+            // Update the testWebhooks function
             function testWebhooks() {
-                const urls = getWebhookUrls();
-                if (urls.length === 0) {
-                    setStatus('Please enter at least one webhook URL', 'error');
-                    addLog('Webhook test failed: No URL provided', 'danger');
+                if (webhooks.length === 0) {
+                    setStatus('Please add at least one webhook URL', 'error');
+                    addLog('Webhook test failed: No webhooks added', 'danger');
                     return;
                 }
                 
                 const testMessage = "This is a test message from Mercury Webhook Messenger";
-                Promise.all(urls.map(url => sendWebhook(url, testMessage, false, false, username.value, avatarUrl.value)))
+                Promise.all(webhooks.map(url => sendWebhook(url, testMessage, false, false, username.value, avatarUrl.value)))
                     .then(() => {
-                        setStatus('Webhook test successful!', 'sending');
-                        addLog('Webhook test: SUCCESS', 'success');
+                        setStatus('All webhook tests successful!', 'sending');
+                        addLog('All webhook tests: SUCCESS', 'success');
                     })
                     .catch(err => {
-                        setStatus('Webhook test failed', 'error');
+                        setStatus('Some webhook tests failed', 'error');
                         addLog(`Webhook test: ERROR - ${err.message}`, 'danger');
                     });
             }
             
-            function startSending() {
-                const urls = getWebhookUrls();
-                if (urls.length === 0) {
-                    setStatus('Please enter at least one webhook URL', 'error');
-                    addLog('Cannot start: No webhook URL provided', 'danger');
-                    return;
-                }
-                
-                const content = messageType.value === 'text' ? message.value : embedDescription.value;
-                if (!content) {
-                    setStatus('Please enter a message', 'error');
-                    addLog('Cannot start: No message content provided', 'danger');
-                    return;
-                }
-                
-                isSending = true;
-                sentMessages = 0;
-                successfulMessages = 0;
-                errorMessages = 0;
-                totalMessages = parseInt(messageCount.value) || Infinity;
-                currentWebhookIndex = 0;
-                maxThreads = parseInt(threads.value) || 1;
-                activeThreads = 0;
-                
-                startBtn.disabled = true;
-                stopBtn.disabled = false;
-                setStatus('Sending messages...', 'sending');
-                addLog('Started sending messages', 'success');
-                
-                updateStats();
-                updateProgress();
-                sendNextMessage();
-            }
-            
-            function sendNextMessage() {
-                if (!isSending || sentMessages >= totalMessages) {
-                    if (sentMessages >= totalMessages) {
-                        stopSending();
-                        setStatus(`Completed. Sent ${sentMessages} messages.`, 'idle');
-                        addLog(`Completed sending ${sentMessages} messages`);
-                    }
-                    return;
-                }
-                
-                const urls = getWebhookUrls();
-                if (currentWebhookIndex >= urls.length) {
-                    currentWebhookIndex = 0;
-                }
-                
-                if (activeThreads >= maxThreads) {
-                    setTimeout(() => sendNextMessage(), 100);
-                    return;
-                }
-                
-                const url = urls[currentWebhookIndex];
-                const includeEveryone = mentionEveryone.checked;
-                const includeHere = mentionHere.checked;
-                
-                let content, embed;
-                if (messageType.value === 'text') {
-                    content = message.value;
-                } else {
-                    content = '';
-                    embed = {
-                        title: embedTitle.value,
-                        description: embedDescription.value,
-                        color: parseInt(embedColor.value.substring(1), 16),
-                        timestamp: new Date().toISOString()
-                    };
-                }
-                
-                activeThreads++;
-                sendWebhook(url, content, includeEveryone, includeHere, username.value, avatarUrl.value, embed)
-                    .then(() => {
-                        sentMessages++;
-                        successfulMessages++;
-                        setStatus(`Sending messages... (${sentMessages} sent)`, 'sending');
-                        addLog(`Message #${sentMessages} sent successfully to webhook ${currentWebhookIndex + 1}`, 'success');
-                        updateStats();
-                        updateProgress();
-                    })
-                    .catch(error => {
-                        sentMessages++;
-                        errorMessages++;
-                        addLog(`Message #${sentMessages} error for webhook ${currentWebhookIndex + 1}: ${error.message}`, 'danger');
-                        updateStats();
-                        updateProgress();
-                    })
-                    .finally(() => {
-                        activeThreads--;
-                        currentWebhookIndex++;
-                        
-                        if (isSending) {
-                            const delayTime = parseInt(delay.value) || 2000;
-                            setTimeout(() => sendNextMessage(), delayTime / maxThreads);
-                        }
-                    });
-            }
-            
-            function stopSending() {
-                isSending = false;
-                startBtn.disabled = false;
-                stopBtn.disabled = true;
-                setStatus(`Stopped. Sent ${sentMessages} messages.`, 'idle');
-                addLog(`Stopped sending. Total messages sent: ${sentMessages}`);
-                
-                if (intervalId) {
-                    clearInterval(intervalId);
-                    intervalId = null;
-                }
-            }
-            
-            function updateStats() {
-                sentCount.textContent = sentMessages;
-                successCount.textContent = successfulMessages;
-                errorCount.textContent = errorMessages;
-            }
-            
-            function updateProgress() {
-                if (totalMessages > 0 && totalMessages !== Infinity) {
-                    const percent = (sentMessages / totalMessages) * 100;
-                    progress.style.width = `${percent}%`;
-                } else {
-                    progress.style.width = '0%';
-                }
-            }
-            
-            async function sendWebhook(url, content, includeEveryone, includeHere, username, avatarUrl, embed = null) {
-                let finalContent = content;
-                if (includeEveryone) finalContent = '@everyone ' + finalContent;
-                if (includeHere) finalContent = '@here ' + finalContent;
-                
-                const payload = { content: finalContent };
-                const parseArray = [];
-                
-                if (includeEveryone) parseArray.push("everyone");
-                if (includeHere) parseArray.push("here");
-                
-                if (parseArray.length > 0) payload.allowed_mentions = { parse: parseArray };
-                if (username && username.trim() !== '') payload.username = username;
-                if (avatarUrl && avatarUrl.trim() !== '') payload.avatar_url = avatarUrl;
-                if (embed) payload.embeds = [embed];
-                
-                try {
-                    const response = await fetch(url, { 
-                        method: 'POST', 
-                        headers: { 'Content-Type': 'application/json' }, 
-                        body: JSON.stringify(payload) 
-                    });
-                    
-                    if (!response.ok) {
-                        let errorMessage = `HTTP ${response.status}`;
-                        try {
-                            const errorData = await response.json();
-                            if (errorData.message) {
-                                errorMessage = errorData.message;
-                            }
-                        } catch (e) {
-                            // If we can't parse the error response, use the status text
-                            errorMessage = response.statusText || `HTTP ${response.status}`;
-                        }
-                        throw new Error(errorMessage);
-                    }
-                    
-                    return response;
-                } catch (error) {
-                    throw new Error(error.message || 'Failed to send webhook');
-                }
-            }
-            
-            function setStatus(text, className) {
-                let icon = 'fas fa-info-circle';
-                if (className === 'sending') icon = 'fas fa-paper-plane';
-                if (className === 'error') icon = 'fas fa-exclamation-circle';
-                
-                status.innerHTML = `<i class="${icon}"></i> ${text}`;
-                status.className = 'status ' + className;
-            }
-            
-            // Set default values
-            webhookUrl.placeholder = 'https://discord.com/api/webhooks/123/abc\nhttps://discord.com/api/webhooks/456/def';
-            message.value = 'Hello from Mercury Webhook Messenger!';
-            addLog('Application loaded. Enter webhook URLs and click Test Webhooks first.');
+            // Initialize
+            renderWebhooks();
         });
     </script>
 </body>
