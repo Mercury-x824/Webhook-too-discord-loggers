@@ -3,18 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mercury Webhook Spammer - Advanced</title>
+    <title>Mercury Webhook Spammer</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary: #3b82f6;
-            --success: #22c55e;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --dark: #1e293b;
-            --darker: #0f172a;
-            --light: #f8fafc;
-            --gray: #94a3b8;
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #2a2a2a;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --accent: #3a3a3a;
+            --border: #444444;
+            --success: #00cc00;
+            --error: #cc0000;
+            --warning: #cccc00;
+            --info: #0066cc;
         }
         
         * {
@@ -25,14 +28,15 @@
         }
         
         body {
-            background: linear-gradient(135deg, var(--darker) 0%, #1e1b4b 100%);
-            color: var(--light);
+            background: var(--bg-primary);
+            color: var(--text-primary);
             min-height: 100vh;
             padding: 20px;
+            line-height: 1.6;
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1000px;
             margin: 0 auto;
         }
         
@@ -40,83 +44,72 @@
             text-align: center;
             margin-bottom: 30px;
             padding: 20px;
-            background: rgba(30, 41, 59, 0.5);
-            border-radius: 16px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            border: 1px solid var(--border);
         }
         
         .header h1 {
             font-size: 2.5rem;
             margin-bottom: 10px;
-            background: linear-gradient(90deg, #60a5fa 0%, #818cf8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--text-primary);
         }
         
         .header p {
-            color: var(--gray);
+            color: var(--text-secondary);
             font-size: 1.1rem;
         }
         
         .card {
-            background: rgba(30, 41, 59, 0.7);
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 24px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
         }
         
         .card-title {
             display: flex;
             align-items: center;
-            gap: 12px;
-            font-size: 1.5rem;
+            gap: 10px;
+            font-size: 1.3rem;
             margin-bottom: 20px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-primary);
         }
         
         .card-title i {
-            color: var(--primary);
-        }
-        
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
+            color: var(--text-primary);
         }
         
         .form-group {
-            margin-bottom: 16px;
+            margin-bottom: 15px;
         }
         
         .form-group label {
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
-            color: var(--gray);
+            color: var(--text-secondary);
         }
         
         .form-control {
             width: 100%;
             padding: 12px 16px;
-            border-radius: 12px;
-            border: 2px solid #334155;
-            background: rgba(30, 41, 59, 0.9);
-            color: var(--light);
+            border-radius: 8px;
+            border: 2px solid var(--border);
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
             font-size: 15px;
             transition: all 0.3s ease;
         }
         
         .form-control:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 15px rgba(96, 165, 250, 0.4);
+            border-color: var(--text-primary);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
             outline: none;
-            background: rgba(30, 41, 59, 1);
+            background: var(--bg-secondary);
         }
         
         textarea.form-control {
@@ -128,13 +121,13 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 16px;
+            margin-bottom: 15px;
         }
         
         .checkbox-group input[type="checkbox"] {
             width: 18px;
             height: 18px;
-            accent-color: var(--primary);
+            accent-color: var(--text-primary);
         }
         
         .checkbox-group label {
@@ -142,46 +135,10 @@
             font-weight: normal;
         }
         
-        .range-group {
-            margin-bottom: 16px;
-        }
-        
-        .range-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--gray);
-        }
-        
-        .range-group input[type="range"] {
-            width: 100%;
-            height: 5px;
-            -webkit-appearance: none;
-            background: #334155;
-            border-radius: 5px;
-            outline: none;
-        }
-        
-        .range-group input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: var(--primary);
-            cursor: pointer;
-        }
-        
-        .range-value {
-            text-align: center;
-            font-weight: 600;
-            color: var(--primary);
-            margin-top: 5px;
-        }
-        
         .btn {
             padding: 12px 24px;
             border: none;
-            border-radius: 12px;
+            border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -192,114 +149,62 @@
         }
         
         .btn-primary {
-            background: linear-gradient(135deg, var(--primary) 0%, #6366f1 100%);
-            color: white;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
         }
         
         .btn-primary:hover {
-            background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+            background: var(--accent);
             transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(59, 130, 246, 0.4);
         }
         
-        .btn-success {
-            background: linear-gradient(135deg, var(--success) 0%, #16a34a 100%);
-            color: white;
+        .btn-action {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
         }
         
-        .btn-success:hover {
-            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(34, 197, 94, 0.4);
-        }
-        
-        .btn-danger {
-            background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
-            color: white;
-        }
-        
-        .btn-danger:hover {
-            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(239, 68, 68, 0.4);
-        }
-        
-        .btn-warning {
-            background: linear-gradient(135deg, var(--warning) 0%, #d97706 100%);
-            color: white;
-        }
-        
-        .btn-warning:hover {
-            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(245, 158, 11, 0.4);
-        }
-        
-        .tabs {
-            display: flex;
-            margin-bottom: 20px;
-            background: rgba(30, 41, 59, 0.5);
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        
-        .tab {
-            flex: 1;
-            padding: 12px;
-            text-align: center;
-            background: rgba(30, 41, 59, 0.5);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .tab.active {
-            background: var(--primary);
-            font-weight: 600;
-        }
-        
-        .tab:hover:not(.active) {
-            background: rgba(30, 41, 59, 0.8);
-        }
-        
-        .tab-content {
-            display: none;
-        }
-        
-        .tab-content.active {
-            display: block;
+        .btn-action:hover {
+            background: var(--accent);
         }
         
         .log-container {
-            background: rgba(15, 23, 42, 0.8);
-            border-radius: 12px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
             padding: 16px;
             height: 200px;
             overflow-y: auto;
             font-family: monospace;
             font-size: 14px;
+            border: 1px solid var(--border);
         }
         
         .log-entry {
             padding: 8px 12px;
             margin-bottom: 8px;
-            border-radius: 8px;
-            background: rgba(30, 41, 59, 0.7);
+            border-radius: 6px;
+            background: var(--bg-secondary);
         }
         
         .log-success {
             border-left: 4px solid var(--success);
+            color: var(--success);
         }
         
         .log-error {
-            border-left: 4px solid var(--danger);
+            border-left: 4px solid var(--error);
+            color: var(--error);
         }
         
         .log-warning {
             border-left: 4px solid var(--warning);
+            color: var(--warning);
         }
         
         .log-info {
-            border-left: 4px solid var(--primary);
+            border-left: 4px solid var(--info);
+            color: var(--info);
         }
         
         .status-bar {
@@ -307,9 +212,10 @@
             justify-content: space-between;
             align-items: center;
             padding: 12px 16px;
-            background: rgba(15, 23, 42, 0.8);
-            border-radius: 12px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
             margin-top: 20px;
+            border: 1px solid var(--border);
         }
         
         .status-indicator {
@@ -322,15 +228,15 @@
             width: 12px;
             height: 12px;
             border-radius: 50%;
-            background: var(--gray);
+            background: var(--text-secondary);
         }
         
         .status-dot.idle {
-            background: var(--gray);
+            background: var(--text-secondary);
         }
         
         .status-dot.sending {
-            background: var(--primary);
+            background: var(--info);
             animation: pulse 1.5s infinite;
         }
         
@@ -339,7 +245,7 @@
         }
         
         .status-dot.error {
-            background: var(--danger);
+            background: var(--error);
         }
         
         @keyframes pulse {
@@ -356,10 +262,10 @@
             max-height: 200px;
             overflow-y: auto;
             margin-bottom: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border);
             border-radius: 8px;
             padding: 10px;
-            background: rgba(30, 41, 59, 0.5);
+            background: var(--bg-tertiary);
         }
         
         .webhook-item {
@@ -368,13 +274,13 @@
             align-items: center;
             padding: 8px 12px;
             margin-bottom: 8px;
-            background: rgba(23, 33, 49, 0.7);
+            background: var(--bg-secondary);
             border-radius: 6px;
             transition: background 0.3s ease;
         }
         
         .webhook-item:hover {
-            background: rgba(23, 33, 49, 0.9);
+            background: var(--accent);
         }
         
         .webhook-url {
@@ -384,7 +290,7 @@
             white-space: nowrap;
             font-family: monospace;
             font-size: 13px;
-            color: #cbd5e1;
+            color: var(--text-secondary);
         }
         
         .webhook-actions {
@@ -395,7 +301,7 @@
         .webhook-btn {
             background: transparent;
             border: none;
-            color: #94a3b8;
+            color: var(--text-secondary);
             cursor: pointer;
             padding: 4px;
             border-radius: 4px;
@@ -403,13 +309,13 @@
         }
         
         .webhook-btn:hover {
-            color: var(--primary);
-            background: rgba(96, 165, 250, 0.1);
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.1);
         }
         
         .webhook-btn.delete:hover {
-            color: var(--danger);
-            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+            background: rgba(204, 0, 0, 0.1);
         }
         
         .webhook-input-group {
@@ -420,51 +326,50 @@
         .webhook-input {
             flex: 1;
             padding: 12px 16px;
-            border-radius: 12px;
-            border: 2px solid #334155;
-            background: rgba(30, 41, 59, 0.7);
-            color: #f8fafc;
+            border-radius: 8px;
+            border: 2px solid var(--border);
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
             font-size: 15px;
             transition: all 0.3s ease;
         }
         
         .webhook-input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 15px rgba(96, 165, 250, 0.4);
+            border-color: var(--text-primary);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
             outline: none;
-            background: rgba(30, 41, 59, 0.9);
+            background: var(--bg-secondary);
         }
         
         .add-webhook-btn {
             padding: 12px 20px;
             border: none;
-            border-radius: 12px;
-            background: linear-gradient(135deg, var(--success) 0%, #16a34a 100%);
-            color: white;
+            border-radius: 8px;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             gap: 8px;
+            border: 1px solid var(--border);
         }
         
         .add-webhook-btn:hover {
-            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(34, 197, 94, 0.4);
+            background: var(--accent);
         }
         
         .empty-state {
             text-align: center;
             padding: 20px;
-            color: #94a3b8;
+            color: var(--text-secondary);
             font-style: italic;
         }
         
         .webhook-counter {
             font-size: 12px;
-            color: #94a3b8;
+            color: var(--text-secondary);
             margin-bottom: 10px;
         }
         
@@ -479,8 +384,8 @@
             padding: 10px;
             border: none;
             border-radius: 8px;
-            background: rgba(96, 165, 250, 0.2);
-            color: var(--primary);
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -488,351 +393,114 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
+            border: 1px solid var(--border);
         }
         
         .import-export-btn:hover {
-            background: rgba(96, 165, 250, 0.3);
+            background: var(--accent);
         }
         
-        .advanced-toggle {
+        .control-buttons {
             display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            cursor: pointer;
-            user-select: none;
-        }
-        
-        .advanced-content {
-            display: none;
+            gap: 15px;
+            flex-wrap: wrap;
             margin-top: 20px;
-            padding: 20px;
-            background: rgba(30, 41, 59, 0.5);
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        .advanced-content.show {
-            display: block;
-        }
-        
-        .badge {
-            padding: 4px 8px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        
-        .badge-primary {
-            background: rgba(59, 130, 246, 0.2);
-            color: var(--primary);
-        }
-        
-        .badge-success {
-            background: rgba(34, 197, 94, 0.2);
-            color: var(--success);
-        }
-        
-        .badge-danger {
-            background: rgba(239, 68, 68, 0.2);
-            color: var(--danger);
-        }
-        
-        .badge-warning {
-            background: rgba(245, 158, 11, 0.2);
-            color: var(--warning);
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1><i class="fas fa-paper-plane"></i> Mercury Webhook Spammer - Advanced</h1>
-            <p class="subtitle">Advanced webhook control with comprehensive settings</p>
+            <h1><i class="fas fa-paper-plane"></i> Mercury Webhook Spammer</h1>
+            <p class="subtitle">Efficient webhook messaging tool with advanced features</p>
         </div>
         
-        <div class="tabs">
-            <div class="tab active" data-tab="webhook-management">Webhook Management</div>
-            <div class="tab" data-tab="message-control">Message Control</div>
-            <div class="tab" data-tab="sending-options">Sending Options</div>
-            <div class="tab" data-tab="advanced">Advanced Settings</div>
-        </div>
-        
-        <div class="tab-content active" id="webhook-management">
-            <div class="card">
-                <div class="card-title">
-                    <i class="fas fa-link"></i>
-                    <span>Webhook Management</span>
+        <div class="card">
+            <div class="card-title">
+                <i class="fas fa-link"></i>
+                <span>Webhook Management</span>
+            </div>
+            
+            <div class="webhook-manager">
+                <div class="webhook-counter" id="webhookCounter">0 webhooks added</div>
+                
+                <div class="webhook-list" id="webhookList">
+                    <div class="empty-state" id="emptyState">No webhooks added yet</div>
                 </div>
                 
-                <div class="webhook-manager">
-                    <div class="webhook-counter" id="webhookCounter">0 webhooks added</div>
-                    
-                    <div class="webhook-list" id="webhookList">
-                        <div class="empty-state" id="emptyState">No webhooks added yet</div>
-                    </div>
-                    
-                    <div class="webhook-input-group">
-                        <input type="text" class="webhook-input" id="webhookInput" placeholder="https://discord.com/api/webhooks/..." />
-                        <button class="add-webhook-btn" id="addWebhookBtn"><i class="fas fa-plus"></i> Add</button>
-                    </div>
-                    
-                    <div class="import-export">
-                        <button class="import-export-btn" id="importWebhooksBtn"><i class="fas fa-file-import"></i> Import</button>
-                        <button class="import-export-btn" id="exportWebhooksBtn"><i class="fas fa-file-export"></i> Export</button>
-                        <button class="import-export-btn" id="clearWebhooksBtn"><i class="fas fa-trash"></i> Clear All</button>
-                    </div>
-                    
-                    <input type="file" id="importFile" accept=".json,.txt" style="display: none;" />
+                <div class="webhook-input-group">
+                    <input type="text" class="webhook-input" id="webhookInput" placeholder="https://discord.com/api/webhooks/..." />
+                    <button class="add-webhook-btn" id="addWebhookBtn"><i class="fas fa-plus"></i> Add</button>
                 </div>
                 
-                <button class="btn btn-primary" id="testWebhook"><i class="fas fa-bolt"></i> Test All Webhooks</button>
+                <div class="import-export">
+                    <button class="import-export-btn" id="importWebhooksBtn"><i class="fas fa-file-import"></i> Import</button>
+                    <button class="import-export-btn" id="exportWebhooksBtn"><i class="fas fa-file-export"></i> Export</button>
+                    <button class="import-export-btn" id="clearWebhooksBtn"><i class="fas fa-trash"></i> Clear All</button>
+                </div>
+                
+                <input type="file" id="importFile" accept=".json,.txt" style="display: none;" />
             </div>
         </div>
         
-        <div class="tab-content" id="message-control">
-            <div class="card">
-                <div class="card-title">
-                    <i class="fas fa-font"></i>
-                    <span>Message Content</span>
+        <div class="card">
+            <div class="card-title">
+                <i class="fas fa-cog"></i>
+                <span>Message Settings</span>
+            </div>
+            
+            <div class="form-group">
+                <label for="messageContent">Message Content</label>
+                <textarea class="form-control" id="messageContent" placeholder="Enter your message content here...">Hello from Mercury Webhook Spammer!</textarea>
+            </div>
+            
+            <div class="grid">
+                <div class="form-group">
+                    <label for="username">Webhook Username</label>
+                    <input type="text" class="form-control" id="username" placeholder="Custom username (optional)">
                 </div>
                 
                 <div class="form-group">
-                    <label for="messageContent">Message Content</label>
-                    <textarea class="form-control" id="messageContent" placeholder="Enter your message content here..."></textarea>
-                </div>
-                
-                <div class="grid">
-                    <div class="form-group">
-                        <label for="username">Webhook Username</label>
-                        <input type="text" class="form-control" id="username" placeholder="Custom username (optional)">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="avatarUrl">Avatar URL</label>
-                        <input type="text" class="form-control" id="avatarUrl" placeholder="URL for custom avatar (optional)">
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="messageFile">File Attachment (URL)</label>
-                    <input type="text" class="form-control" id="messageFile" placeholder="URL to file attachment (optional)">
+                    <label for="avatarUrl">Avatar URL</label>
+                    <input type="text" class="form-control" id="avatarUrl" placeholder="URL for custom avatar (optional)">
                 </div>
             </div>
             
-            <div class="card">
-                <div class="card-title">
-                    <i class="fas fa-code"></i>
-                    <span>Embed Settings</span>
-                </div>
-                
-                <div class="checkbox-group">
-                    <input type="checkbox" id="useEmbed">
-                    <label for="useEmbed">Use Embed Message</label>
-                </div>
-                
-                <div id="embedSettings" style="display: none;">
-                    <div class="grid">
-                        <div class="form-group">
-                            <label for="embedTitle">Embed Title</label>
-                            <input type="text" class="form-control" id="embedTitle" placeholder="Embed title (optional)">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="embedColor">Embed Color</label>
-                            <input type="color" class="form-control" id="embedColor" value="#3B82F6">
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="embedDescription">Embed Description</label>
-                        <textarea class="form-control" id="embedDescription" placeholder="Embed description (optional)"></textarea>
-                    </div>
-                    
-                    <div class="grid">
-                        <div class="form-group">
-                            <label for="embedFooter">Embed Footer</label>
-                            <input type="text" class="form-control" id="embedFooter" placeholder="Embed footer text (optional)">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="embedImage">Embed Image URL</label>
-                            <input type="text" class="form-control" id="embedImage" placeholder="URL for embed image (optional)">
-                        </div>
-                    </div>
-                </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="useTTS">
+                <label for="useTTS">Use Text-to-Speech (TTS)</label>
             </div>
         </div>
         
-        <div class="tab-content" id="sending-options">
-            <div class="card">
-                <div class="card-title">
-                    <i class="fas fa-cogs"></i>
-                    <span>Sending Configuration</span>
-                </div>
-                
-                <div class="grid">
-                    <div class="form-group">
-                        <label for="delay">Delay Between Messages (ms)</label>
-                        <input type="number" class="form-control" id="delay" value="1000" min="0">
-                        <small>Time between each message send operation</small>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="retryCount">Retry Attempts on Failure</label>
-                        <input type="number" class="form-control" id="retryCount" value="3" min="0" max="10">
-                        <small>Number of times to retry failed webhook sends</small>
-                    </div>
-                </div>
-                
-                <div class="grid">
-                    <div class="form-group">
-                        <label for="messageCount">Messages to Send</label>
-                        <input type="number" class="form-control" id="messageCount" value="1" min="1" max="1000">
-                        <small>Number of times to send the message</small>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="threadCount">Concurrent Threads</label>
-                        <input type="number" class="form-control" id="threadCount" value="1" min="1" max="10">
-                        <small>Number of concurrent sending operations</small>
-                    </div>
-                </div>
-                
-                <div class="checkbox-group">
-                    <input type="checkbox" id="randomizeDelay">
-                    <label for="randomizeDelay">Randomize Delay (±20%)</label>
-                </div>
-                
-                <div class="checkbox-group">
-                    <input type="checkbox" id="autoStop">
-                    <label for="autoStop">Stop After Completion</label>
-                </div>
+        <div class="card">
+            <div class="card-title">
+                <i class="fas fa-paper-plane"></i>
+                <span>Send Options</span>
             </div>
             
-            <div class="card">
-                <div class="card-title">
-                    <i class="fas fa-shield-alt"></i>
-                    <span>Stealth Options</span>
-                </div>
-                
-                <div class="checkbox-group">
-                    <input type="checkbox" id="useProxies">
-                    <label for="useProxies">Use Proxy Servers</label>
-                </div>
-                
-                <div id="proxySettings" style="display: none;">
-                    <div class="form-group">
-                        <label for="proxyList">Proxy List (one per line)</label>
-                        <textarea class="form-control" id="proxyList" placeholder="http://proxy1:port
-http://proxy2:port"></textarea>
-                    </div>
-                    
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="rotateProxies">
-                        <label for="rotateProxies">Rotate Proxies</label>
-                    </div>
-                </div>
-                
-                <div class="checkbox-group">
-                    <input type="checkbox" id="spoofIP">
-                    <label for="spoofIP">Spoof IP Headers (Experimental)</label>
-                </div>
-                
-                <div class="checkbox-group">
-                    <input type="checkbox" id="randomizeUserAgent">
-                    <label for="randomizeUserAgent">Randomize User Agent</label>
-                </div>
-            </div>
-        </div>
-        
-        <div class="tab-content" id="advanced">
-            <div class="card">
-                <div class="card-title">
-                    <i class="fas fa-sliders-h"></i>
-                    <span>Advanced Webhook Settings</span>
-                </div>
-                
-                <div class="grid">
-                    <div class="form-group">
-                        <label for="timeout">Request Timeout (ms)</label>
-                        <input type="number" class="form-control" id="timeout" value="10000" min="1000" max="60000">
-                        <small>Time before considering a request failed</small>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="rateLimit">Rate Limit Bypass</label>
-                        <select class="form-control" id="rateLimit">
-                            <option value="none">None</option>
-                            <option value="basic">Basic (random delays)</option>
-                            <option value="advanced">Advanced (IP rotation)</option>
-                        </select>
-                        <small>Strategy to avoid rate limiting</small>
-                    </div>
+            <div class="grid">
+                <div class="form-group">
+                    <label for="delay">Delay Between Messages (ms)</label>
+                    <input type="number" class="form-control" id="delay" value="1000" min="0">
                 </div>
                 
                 <div class="form-group">
-                    <label for="customHeaders">Custom Headers (JSON)</label>
-                    <textarea class="form-control" id="customHeaders" placeholder='{"Header-Name": "Header-Value"}'></textarea>
-                </div>
-                
-                <div class="checkbox-group">
-                    <input type="checkbox" id="validateWebhooks">
-                    <label for="validateWebhooks">Validate Webhooks Before Sending</label>
-                </div>
-                
-                <div class="checkbox-group">
-                    <input type="checkbox" id="skipFailures">
-                    <label for="skipFailures">Skip Failed Webhooks</label>
-                </div>
-                
-                <div class="checkbox-group">
-                    <input type="checkbox" id="saveResponses">
-                    <label for="saveResponses">Save Response Data</label>
+                    <label for="messageCount">Number of Messages</label>
+                    <input type="number" class="form-control" id="messageCount" value="1" min="1" max="100">
                 </div>
             </div>
             
-            <div class="card">
-                <div class="card-title">
-                    <i class="fas fa-bolt"></i>
-                    <span>Execution Control</span>
-                </div>
-                
-                <div class="grid">
-                    <div class="form-group">
-                        <label for="executionMode">Execution Mode</label>
-                        <select class="form-control" id="executionMode">
-                            <option value="sequential">Sequential</option>
-                            <option value="parallel">Parallel</option>
-                            <option value="burst">Burst Mode</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="priority">Webhook Priority</label>
-                        <select class="form-control" id="priority">
-                            <option value="normal">Normal</option>
-                            <option value="random">Random Order</option>
-                            <option value="success">Prioritize Successful</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="maxRequests">Maximum Requests</label>
-                    <input type="number" class="form-control" id="maxRequests" value="0" min="0">
-                    <small>0 = unlimited</small>
-                </div>
-                
-                <div class="checkbox-group">
-                    <input type="checkbox" id="autoSave">
-                    <label for="autoSave">Auto-Save Progress</label>
-                </div>
-                
-                <div class="checkbox-group">
-                    <input type="checkbox" id="stopOnError">
-                    <label for="stopOnError">Stop on Critical Error</label>
-                </div>
+            <div class="control-buttons">
+                <button class="btn btn-primary" id="testWebhook"><i class="fas fa-bolt"></i> Test Webhooks</button>
+                <button class="btn btn-action" id="startSending"><i class="fas fa-play"></i> Start Sending</button>
+                <button class="btn btn-action" id="stopSending" disabled><i class="fas fa-stop"></i> Stop Sending</button>
             </div>
         </div>
         
@@ -859,60 +527,11 @@ http://proxy2:port"></textarea>
                 </div>
             </div>
         </div>
-        
-        <div class="card">
-            <div class="card-title">
-                <i class="fas fa-play-circle"></i>
-                <span>Execution Control</span>
-            </div>
-            
-            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                <button class="btn btn-success" id="startSending"><i class="fas fa-play"></i> Start Sending</button>
-                <button class="btn btn-warning" id="pauseSending" disabled><i class="fas fa-pause"></i> Pause</button>
-                <button class="btn btn-danger" id="stopSending" disabled><i class="fas fa-stop"></i> Stop</button>
-                <button class="btn btn-primary" id="saveConfig"><i class="fas fa-save"></i> Save Configuration</button>
-                <button class="btn btn-primary" id="loadConfig"><i class="fas fa-folder-open"></i> Load Configuration</button>
-            </div>
-        </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Tab functionality
-            const tabs = document.querySelectorAll('.tab');
-            const tabContents = document.querySelectorAll('.tab-content');
-            
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    const tabId = tab.getAttribute('data-tab');
-                    
-                    // Deactivate all tabs
-                    tabs.forEach(t => t.classList.remove('active'));
-                    tabContents.forEach(tc => tc.classList.remove('active'));
-                    
-                    // Activate current tab
-                    tab.classList.add('active');
-                    document.getElementById(tabId).classList.add('active');
-                });
-            });
-            
-            // Toggle embed settings
-            const useEmbed = document.getElementById('useEmbed');
-            const embedSettings = document.getElementById('embedSettings');
-            
-            useEmbed.addEventListener('change', () => {
-                embedSettings.style.display = useEmbed.checked ? 'block' : 'none';
-            });
-            
-            // Toggle proxy settings
-            const useProxies = document.getElementById('useProxies');
-            const proxySettings = document.getElementById('proxySettings');
-            
-            useProxies.addEventListener('change', () => {
-                proxySettings.style.display = useProxies.checked ? 'block' : 'none';
-            });
-            
-            // Webhook management functionality
+            // Elements
             const webhookInput = document.getElementById('webhookInput');
             const addWebhookBtn = document.getElementById('addWebhookBtn');
             const webhookList = document.getElementById('webhookList');
@@ -923,9 +542,24 @@ http://proxy2:port"></textarea>
             const clearWebhooksBtn = document.getElementById('clearWebhooksBtn');
             const importFile = document.getElementById('importFile');
             const testWebhook = document.getElementById('testWebhook');
+            const startSending = document.getElementById('startSending');
+            const stopSending = document.getElementById('stopSending');
+            const messageContent = document.getElementById('messageContent');
+            const username = document.getElementById('username');
+            const avatarUrl = document.getElementById('avatarUrl');
+            const useTTS = document.getElementById('useTTS');
+            const delay = document.getElementById('delay');
+            const messageCount = document.getElementById('messageCount');
+            const logContainer = document.getElementById('logContainer');
+            const statusText = document.getElementById('statusText');
+            const stats = document.getElementById('stats');
+            const statusDot = document.querySelector('.status-dot');
             
             // Webhooks array
             let webhooks = [];
+            let isSending = false;
+            let sentCount = 0;
+            let failedCount = 0;
             
             // Load webhooks from localStorage if available
             loadWebhooks();
@@ -940,6 +574,8 @@ http://proxy2:port"></textarea>
             clearWebhooksBtn.addEventListener('click', clearWebhooks);
             importFile.addEventListener('change', importWebhooks);
             testWebhook.addEventListener('click', testWebhooks);
+            startSending.addEventListener('click', startSendingMessages);
+            stopSending.addEventListener('click', stopSendingMessages);
             
             // Functions
             function addWebhook() {
@@ -948,7 +584,7 @@ http://proxy2:port"></textarea>
                 
                 // Basic validation for Discord webhook URLs
                 if (!isValidWebhookUrl(url)) {
-                    addLog('Invalid webhook URL format', 'danger');
+                    addLog('Invalid webhook URL format', 'error');
                     setStatus('Invalid webhook URL format', 'error');
                     return;
                 }
@@ -981,12 +617,12 @@ http://proxy2:port"></textarea>
                 const url = webhooks[index];
                 const testMessage = "Test message from Mercury Webhook Messenger";
                 
-                sendWebhook(url, testMessage, false, false, username.value, avatarUrl.value)
+                sendWebhook(url, testMessage, useTTS.checked, username.value, avatarUrl.value)
                     .then(() => {
                         addLog(`Webhook test successful: ${truncateUrl(url)}`, 'success');
                     })
                     .catch(err => {
-                        addLog(`Webhook test failed: ${truncateUrl(url)} - ${err.message}`, 'danger');
+                        addLog(`Webhook test failed: ${truncateUrl(url)} - ${err.message}`, 'error');
                     });
             }
             
@@ -1035,11 +671,15 @@ http://proxy2:port"></textarea>
                 }
                 
                 updateWebhookCounter();
+                updateStats();
             }
             
             function updateWebhookCounter() {
                 webhookCounter.textContent = `${webhooks.length} webhook${webhooks.length !== 1 ? 's' : ''} added`;
-                updateStats();
+            }
+            
+            function updateStats() {
+                stats.textContent = `Webhooks: ${webhooks.length} | Sent: ${sentCount} | Failed: ${failedCount}`;
             }
             
             function saveWebhooks() {
@@ -1112,7 +752,7 @@ http://proxy2:port"></textarea>
                         setStatus(`Imported ${addedCount} webhooks`, 'idle');
                         
                     } catch (error) {
-                        addLog('Failed to import webhooks: Invalid file', 'danger');
+                        addLog('Failed to import webhooks: Invalid file', 'error');
                         setStatus('Failed to import webhooks', 'error');
                     }
                 };
@@ -1148,55 +788,117 @@ http://proxy2:port"></textarea>
             function testWebhooks() {
                 if (webhooks.length === 0) {
                     setStatus('Please add at least one webhook URL', 'error');
-                    addLog('Webhook test failed: No webhooks added', 'danger');
+                    addLog('Webhook test failed: No webhooks added', 'error');
                     return;
                 }
                 
                 const testMessage = "This is a test message from Mercury Webhook Messenger";
-                Promise.all(webhooks.map(url => sendWebhook(url, testMessage, false, false, username.value, avatarUrl.value)))
-                    .then(() => {
-                        setStatus('All webhook tests successful!', 'sending');
-                        addLog('All webhook tests: SUCCESS', 'success');
-                    })
-                    .catch(err => {
-                        setStatus('Some webhook tests failed', 'error');
-                        addLog(`Webhook test: ERROR - ${err.message}`, 'danger');
-                    });
+                setStatus('Testing webhooks...', 'sending');
+                
+                // Test each webhook with a small delay between them
+                let promises = [];
+                webhooks.forEach((url, index) => {
+                    promises.push(new Promise(resolve => {
+                        setTimeout(() => {
+                            sendWebhook(url, testMessage, useTTS.checked, username.value, avatarUrl.value)
+                                .then(() => {
+                                    addLog(`Webhook test successful: ${truncateUrl(url)}`, 'success');
+                                    resolve(true);
+                                })
+                                .catch(err => {
+                                    addLog(`Webhook test failed: ${truncateUrl(url)} - ${err.message}`, 'error');
+                                    resolve(false);
+                                });
+                        }, index * 500);
+                    }));
+                });
+                
+                Promise.all(promises).then(results => {
+                    const successCount = results.filter(r => r).length;
+                    setStatus(`Test completed: ${successCount}/${webhooks.length} successful`, 'idle');
+                });
             }
             
-            // Webhook sending function
-            async function sendWebhook(url, content, isTTS, isEmbed, username, avatarUrl, fileUrl) {
+            function startSendingMessages() {
+                if (webhooks.length === 0) {
+                    setStatus('Please add at least one webhook URL', 'error');
+                    addLog('Cannot start: No webhooks added', 'error');
+                    return;
+                }
+                
+                if (!messageContent.value.trim()) {
+                    setStatus('Message content is empty', 'error');
+                    addLog('Cannot start: Message content is empty', 'error');
+                    return;
+                }
+                
+                isSending = true;
+                startSending.disabled = true;
+                stopSending.disabled = false;
+                setStatus('Sending messages...', 'sending');
+                
+                const totalMessages = parseInt(messageCount.value) || 1;
+                const delayMs = parseInt(delay.value) || 1000;
+                
+                sendMessagesRecursively(0, totalMessages, delayMs);
+            }
+            
+            function stopSendingMessages() {
+                isSending = false;
+                startSending.disabled = false;
+                stopSending.disabled = true;
+                setStatus('Stopped sending messages', 'idle');
+                addLog('Message sending stopped', 'warning');
+            }
+            
+            function sendMessagesRecursively(currentCount, totalCount, delayMs) {
+                if (!isSending || currentCount >= totalCount) {
+                    if (currentCount >= totalCount) {
+                        setStatus(`Finished sending ${totalCount} messages`, 'success');
+                        addLog(`Finished sending ${totalCount} messages`, 'success');
+                    }
+                    isSending = false;
+                    startSending.disabled = false;
+                    stopSending.disabled = true;
+                    return;
+                }
+                
+                // Send to all webhooks
+                const message = messageContent.value;
+                const tts = useTTS.checked;
+                const user = username.value;
+                const avatar = avatarUrl.value;
+                
+                webhooks.forEach(url => {
+                    sendWebhook(url, message, tts, user, avatar)
+                        .then(() => {
+                            sentCount++;
+                            updateStats();
+                        })
+                        .catch(err => {
+                            failedCount++;
+                            updateStats();
+                            addLog(`Failed to send to ${truncateUrl(url)}: ${err.message}`, 'error');
+                        });
+                });
+                
+                setTimeout(() => {
+                    sendMessagesRecursively(currentCount + 1, totalCount, delayMs);
+                }, delayMs);
+            }
+            
+            async function sendWebhook(url, content, tts, username, avatarUrl) {
                 const payload = {
                     content: content,
-                    tts: isTTS || false,
-                    username: username || null,
-                    avatar_url: avatarUrl || null
+                    tts: tts || false
                 };
                 
-                // Add embed if enabled
-                if (isEmbed && useEmbed.checked) {
-                    const embed = {
-                        title: document.getElementById('embedTitle').value || null,
-                        description: document.getElementById('embedDescription').value || null,
-                        color: parseInt(document.getElementById('embedColor').value.substring(1), 16) || null,
-                        footer: document.getElementById('embedFooter').value ? {
-                            text: document.getElementById('embedFooter').value
-                        } : null,
-                        image: document.getElementById('embedImage').value ? {
-                            url: document.getElementById('embedImage').value
-                        } : null
-                    };
-                    
-                    // Remove null properties
-                    Object.keys(embed).forEach(key => {
-                        if (embed[key] === null) {
-                            delete embed[key];
-                        }
-                    });
-                    
-                    if (Object.keys(embed).length > 0) {
-                        payload.embeds = [embed];
-                    }
+                if (username && username.trim()) {
+                    payload.username = username;
+                }
+                
+                if (avatarUrl && avatarUrl.trim()) {
+                    payload.avatar_url = avatarUrl;
                 }
                 
                 try {
@@ -1218,9 +920,7 @@ http://proxy2:port"></textarea>
                 }
             }
             
-            // Logging functions
             function addLog(message, type = 'info') {
-                const logContainer = document.getElementById('logContainer');
                 const logEntry = document.createElement('div');
                 logEntry.className = `log-entry log-${type}`;
                 
@@ -1232,21 +932,13 @@ http://proxy2:port"></textarea>
             }
             
             function setStatus(message, status) {
-                const statusText = document.getElementById('statusText');
-                const statusDot = document.querySelector('.status-dot');
-                
                 statusText.textContent = message;
                 statusDot.className = 'status-dot ' + status;
             }
             
-            function updateStats() {
-                const statsElement = document.getElementById('stats');
-                statsElement.textContent = `Webhooks: ${webhooks.length} | Sent: 0 | Failed: 0`;
-            }
-            
             // Initialize
             renderWebhooks();
-            addLog('Advanced webhook control system initialized', 'success');
+            addLog('Webhook system initialized', 'info');
         });
     </script>
 </body>
