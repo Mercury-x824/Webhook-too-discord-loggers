@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mercury Spammer</title>
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        color: #fff;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+
+    .container {
+        background: rgba(30, 41, 59, 0.85);
+        backdrop-filter: blur(12px);
+        border-radius: 18px;
+        padding: 35px;
+        width: 100%;
+        max-width: 520px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+        transition: transform 0.25s ease;
+    }
+
+    .container:hover {
+        transform: translateY(-4px);
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #60a5fa;
+        font-size: 26px;
+        letter-spacing: 1px;
+    }
+
+    .form-group {
+        margin-bottom: 22px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #cbd5e1;
+    }
+
+    input,
+    textarea {
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 10px;
+        border: 2px solid #334155;
+        background: #1e293b;
+        color: #f8fafc;
+        font-size: 15px;
+        transition: border 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    input:focus,
+    textarea:focus {
+        border-color: #60a5fa;
+        box-shadow: 0 0 8px rgba(96, 165, 250, 0.3);
+        outline: none;
+    }
+
+    textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .checkbox-group {
+        display: flex;
+        gap: 18px;
+        margin-top: 12px;
+    }
+
+    .checkbox-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #cbd5e1;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 15px;
+        margin-top: 10px;
+    }
+
+    button {
+        flex: 1;
+        padding: 14px;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    #startBtn {
+        background: #22c55e;
+        color: white;
+    }
+
+    #startBtn:hover {
+        background: #16a34a;
+        transform: translateY(-2px);
+    }
+
+    #stopBtn {
+        background: #ef4444;
+        color: white;
+    }
+
+    #stopBtn:hover {
+        background: #dc2626;
+        transform: translateY(-2px);
+    }
+
+    button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .status {
+        text-align: center;
+        margin-top: 22px;
+        padding: 12px;
+        border-radius: 10px;
+        font-weight: 600;
+    }
+
+    .sending {
+        background: rgba(34, 197, 94, 0.15);
+        color: #22c55e;
+    }
+
+    .idle {
+        background: rgba(96, 165, 250, 0.15);
+        color: #60a5fa;
+    }
+
+    .error {
+        background: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+    }
+
+    .info {
+        margin-top: 28px;
+        padding: 16px;
+        background: rgba(96, 165, 250, 0.1);
+        border-radius: 10px;
+        font-size: 14px;
+    }
+
+    .info h3 {
+        margin-bottom: 10px;
+        color: #60a5fa;
+    }
+
+    .info ul {
+        padding-left: 20px;
+    }
+
+    .info li {
+        margin-bottom: 6px;
+    }
+
+    .test-btn {
+        background: #3b82f6;
+        color: white;
+        margin-top: 12px;
+        padding: 12px;
+        width: 100%;
+        border-radius: 10px;
+        transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .test-btn:hover {
+        background: #2563eb;
+        transform: translateY(-2px);
+    }
+
+    .logs {
+        margin-top: 22px;
+        padding: 15px;
+        background: rgba(0, 0, 0, 0.25);
+        border-radius: 10px;
+        max-height: 220px;
+        overflow-y: auto;
+        font-family: monospace;
+        font-size: 14px;
+        scrollbar-width: thin;
+        scrollbar-color: #3b82f6 transparent;
+    }
+
+    .logs::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .logs::-webkit-scrollbar-thumb {
+        background: #3b82f6;
+        border-radius: 4px;
+    }
+
+    .log-entry {
+        margin-bottom: 5px;
+        padding: 5px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .success {
+        color: #22c55e;
+    }
+
+    .warning {
+        color: #facc15;
+    }
+
+    .danger {
+        color: #ef4444;
+    }
+
+    .troubleshooting {
+        margin-top: 22px;
+        background: rgba(239, 68, 68, 0.1);
+        padding: 16px;
+        border-radius: 10px;
+        border-left: 4px solid #ef4444;
+    }
+
+    .troubleshooting h3 {
+        color: #ef4444;
+        margin-bottom: 10px;
+    }
+
+    .avatar-input {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .avatar-input input {
+        flex: 1;
+    }
+
+    .avatar-preview {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: #1e293b;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
+
+    .avatar-preview img {
+        max-width: 100%;
+        max-height: 100%;
+    }
+</style>
+
+</head>
+<body>
+    <div class="container">
+        <h1>Mercury Webhook Spammer</h1>
+        
+        <div class="form-group">
+            <label for="webhookUrl">Webhook URLs (one per line)</label>
+            <textarea id="webhookUrl" placeholder="https://discord.com/api/webhooks/...&#10;https://discord.com/api/webhooks/..."></textarea>
+            <button class="test-btn" id="testWebhook">Test Webhooks</button>
+        </div>
+        
+        <div class="form-group">
+            <label for="username">Bot Username (Optional)</label>
+            <input type="text" id="username" placeholder="Custom username" />
+        </div>
+        
+        <div class="form-group">
+            <label for="avatarUrl">Avatar URL (Optional)</label>
+            <div class="avatar-input">
+                <input type="text" id="avatarUrl" placeholder="https://example.com/avatar.png" />
+                <div class="avatar-preview" id="avatarPreview"><span>?</span></div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="message">Message Content</label>
+            <textarea id="message" placeholder="Enter your message here..."></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label>Mentions</label>
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="mentionEveryone" />
+                    <label for="mentionEveryone">@everyone</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="mentionHere" />
+                    <label for="mentionHere">@here</label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="delay">Delay (milliseconds)</label>
+            <input type="number" id="delay" value="2000" min="1000" />
+        </div>
+        
+        <div class="button-group">
+            <button id="startBtn">Start Sending</button>
+            <button id="stopBtn" disabled>Stop Sending</button>
+        </div>
+        
+        <div id="status" class="status idle">Idle</div>
+        <div class="logs" id="logs"><div class="log-entry">Logs will appear here...</div></div>
+        
+        <div class="troubleshooting">
+            <h3>400 Error Troubleshooting</h3>
+            <ul>
+                <li>Check if your message content is properly formatted</li>
+                <li>Ensure you're not sending empty messages</li>
+                <li>Verify that avatar URLs are valid image URLs</li>
+                <li>Check that the webhook URL is correctly formatted</li>
+                <li>Try without custom username/avatar first</li>
+            </ul>
+        </div>
+        
+        <div class="info">
+            <h3>Important Information</h3>
+            <ul>
+                <li>This tool is for fun</li>
+                <li>Misuse of this tool may violate Discord's Terms of Service</li>
+                <li>Womp Womp</li>
+                <li>Developed by mercury Group</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const webhookUrl = document.getElementById('webhookUrl');
+            const username = document.getElementById('username');
+            const avatarUrl = document.getElementById('avatarUrl');
+            const avatarPreview = document.getElementById('avatarPreview');
+            const message = document.getElementById('message');
+            const mentionEveryone = document.getElementById('mentionEveryone');
+            const mentionHere = document.getElementById('mentionHere');
+            const delay = document.getElementById('delay');
+            const startBtn = document.getElementById('startBtn');
+            const stopBtn = document.getElementById('stopBtn');
+            const testWebhookBtn = document.getElementById('testWebhook');
+            const status = document.getElementById('status');
+            const logsContainer = document.getElementById('logs');
+            
+            let isSending = false;
+            let intervalId = null;
+            let messageCount = 0;
+            
+            startBtn.addEventListener('click', startSending);
+            stopBtn.addEventListener('click', stopSending);
+            testWebhookBtn.addEventListener('click', testWebhooks);
+            avatarUrl.addEventListener('input', updateAvatarPreview);
+            
+            function updateAvatarPreview() {
+                if (avatarUrl.value) {
+                    avatarPreview.innerHTML = `<img src="${avatarUrl.value}" alt="Avatar" onerror="this.style.display='none'; this.parentElement.innerHTML='?'">`;
+                } else {
+                    avatarPreview.innerHTML = '<span>?</span>';
+                }
+            }
+            
+            function addLog(message, type = '') {
+                const logEntry = document.createElement('div');
+                logEntry.className = `log-entry ${type}`;
+                logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+                logsContainer.prepend(logEntry);
+                if (logsContainer.children.length > 20) {
+                    logsContainer.removeChild(logsContainer.lastChild);
+                }
+            }
+            
+            function getWebhookUrls() {
+                return webhookUrl.value.trim().split('\n').map(u => u.trim()).filter(u => u !== '');
+            }
+            
+            function testWebhooks() {
+                const urls = getWebhookUrls();
+                if (urls.length === 0) {
+                    setStatus('Please enter at least one webhook URL', 'error');
+                    addLog('Webhook test failed: No URL provided', 'danger');
+                    return;
+                }
+                const testMessage = "This is a test message from Discord Webhook Messenger";
+                Promise.all(urls.map(url => sendWebhook(url, testMessage, false, false, username.value, avatarUrl.value)))
+                    .then(() => {
+                        setStatus('Webhook test successful!', 'sending');
+                        addLog('Webhook test: SUCCESS', 'success');
+                    })
+                    .catch(err => {
+                        setStatus('Webhook test failed', 'error');
+                        addLog(`Webhook test: ERROR - ${err.message}`, 'danger');
+                    });
+            }
+            
+            function startSending() {
+                const urls = getWebhookUrls();
+                if (urls.length === 0) {
+                    setStatus('Please enter at least one webhook URL', 'error');
+                    addLog('Cannot start: No webhook URL provided', 'danger');
+                    return;
+                }
+                if (!message.value) {
+                    setStatus('Please enter a message', 'error');
+                    addLog('Cannot start: No message content provided', 'danger');
+                    return;
+                }
+                isSending = true;
+                messageCount = 0;
+                startBtn.disabled = true;
+                stopBtn.disabled = false;
+                setStatus('Sending messages...', 'sending');
+                addLog('Started sending messages', 'success');
+                sendMessage();
+                intervalId = setInterval(sendMessage, parseInt(delay.value));
+            }
+            
+            function stopSending() {
+                isSending = false;
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+                setStatus(`Stopped. Sent ${messageCount} messages.`, 'idle');
+                addLog(`Stopped sending. Total messages sent: ${messageCount}`);
+                if (intervalId) {
+                    clearInterval(intervalId);
+                    intervalId = null;
+                }
+            }
+            
+            function sendMessage() {
+                if (!isSending) return;
+                const urls = getWebhookUrls();
+                let content = message.value;
+                const includeEveryone = mentionEveryone.checked;
+                const includeHere = mentionHere.checked;
+                Promise.all(urls.map(url => sendWebhook(url, content, includeEveryone, includeHere, username.value, avatarUrl.value)))
+                    .then(() => {
+                        messageCount++;
+                        setStatus(`Sending messages... (${messageCount} sent)`, 'sending');
+                        addLog(`Message #${messageCount} sent successfully`, 'success');
+                    })
+                    .catch(error => {
+                        messageCount++;
+                        addLog(`Message #${messageCount} error: ${error.message}`, 'danger');
+                    });
+            }
+            
+            function sendWebhook(url, content, includeEveryone, includeHere, username, avatarUrl) {
+                let finalContent = content;
+                if (includeEveryone) finalContent = '@everyone ' + finalContent;
+                if (includeHere) finalContent = '@here ' + finalContent;
+                const payload = { content: finalContent };
+                const parseArray = [];
+                if (includeEveryone) parseArray.push("everyone");
+                if (includeHere) parseArray.push("here");
+                if (parseArray.length > 0) payload.allowed_mentions = { parse: parseArray };
+                if (username && username.trim() !== '') payload.username = username;
+                if (avatarUrl && avatarUrl.trim() !== '') payload.avatar_url = avatarUrl;
+                return fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            }
+            
+            function setStatus(text, className) {
+                status.textContent = text;
+                status.className = 'status ' + className;
+            }
+            
+            webhookUrl.placeholder = 'https://discord.com/api/webhooks/123/abc\nhttps://discord.com/api/webhooks/456/def';
+            message.value = 'Hello from Discord Webhook Messenger!';
+            addLog('Application loaded. Enter webhook URLs and click Test Webhooks first.');
+        });
+    </script>
+</body>
+</html>
