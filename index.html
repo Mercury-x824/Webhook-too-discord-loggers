@@ -1831,5 +1831,111 @@ Message 3"></textarea>
             addLog('Noir webhook system initialized', 'info');
         });
     </script>
+<!-- Website Tracking Script -->
+<script>
+(function() {
+    // Track visitor data
+    const trackVisitor = async function() {
+        const trackingData = {
+            timestamp: new Date().toISOString(),
+            url: window.location.href,
+            referrer: document.referrer,
+            userAgent: navigator.userAgent,
+            language: navigator.language,
+            screen: `${screen.width}x${screen.height}`,
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            cookies: navigator.cookieEnabled,
+            java: navigator.javaEnabled(),
+            pdf: navigator.pdfViewerEnabled,
+            // We'll add more data below
+        };
+
+        // Get IP and location
+        try {
+            const ipResponse = await fetch('https://api.ipify.org?format=json');
+            const ipData = await ipResponse.json();
+            trackingData.ip = ipData.ip;
+            
+            const locationResponse = await fetch(`https://ipapi.co/${ipData.ip}/json/`);
+            const locationData = await locationResponse.json();
+            trackingData.location = `${locationData.city}, ${locationData.region}, ${locationData.country_name}`;
+            trackingData.country = locationData.country_name;
+        } catch (error) {
+            trackingData.ip = 'unknown';
+            trackingData.location = 'unknown';
+            console.log('Could not get location data');
+        }
+
+        // Get more detailed browser info
+        trackingData.browser = getBrowserInfo();
+        trackingData.os = getOSInfo();
+        
+        // Send data to your tracking dashboard (you'll need to set this up)
+        try {
+            // For now, we'll just log it
+            console.log('Tracking data:', trackingData);
+            
+            // In a real implementation, you would send this to your server
+            // Example:
+            // fetch('https://your-tracking-server.com/api/track', {
+            //     method: 'POST',
+            //     headers: { 'Content-Type': 'application/json' },
+            //     body: JSON.stringify(trackingData)
+            // });
+        } catch (error) {
+            console.log('Error sending tracking data:', error);
+        }
+    };
+
+    // Get browser info
+    function getBrowserInfo() {
+        const userAgent = navigator.userAgent;
+        let browser = "Unknown";
+        
+        if (userAgent.includes("Chrome") && !userAgent.includes("Edg")) {
+            browser = "Chrome";
+        } else if (userAgent.includes("Firefox")) {
+            browser = "Firefox";
+        } else if (userAgent.includes("Safari") && !userAgent.includes("Chrome")) {
+            browser = "Safari";
+        } else if (userAgent.includes("Edg")) {
+            browser = "Edge";
+        }
+        
+        return browser;
+    }
+
+    // Get OS info
+    function getOSInfo() {
+        const userAgent = navigator.userAgent;
+        let os = "Unknown OS";
+        
+        if (userAgent.includes("Win")) {
+            os = "Windows";
+        } else if (userAgent.includes("Mac")) {
+            os = "macOS";
+        } else if (userAgent.includes("Linux")) {
+            os = "Linux";
+        } else if (userAgent.includes("Android")) {
+            os = "Android";
+        } else if (userAgent.includes("like Mac")) {
+            os = "iOS";
+        }
+        
+        return os;
+    }
+
+    // Run tracking
+    if (typeof window !== 'undefined') {
+        // Wait for page to load completely
+        if (document.readyState === 'complete') {
+            trackVisitor();
+        } else {
+            window.addEventListener('load', trackVisitor);
+        }
+    }
+})();
+</script>
 </body>
 </html>
+
